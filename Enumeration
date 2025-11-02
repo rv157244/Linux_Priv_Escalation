@@ -3,11 +3,15 @@ A escalada de privilégios é uma jornada. Não existem soluções mágicas, e m
 Enumeração:
 Os testes de penetração, ao contrário das máquinas CTF, não terminam quando você obtém acesso a um sistema específico ou a um nível de privilégio de usuário. Como você verá, a enumeração é tão importante na fase pós-comprometimento quanto na fase anterior.
 
-```hostname´´´
+```bash
+hostname
+```
 
 comando retornará o nome do host da máquina de destino. Embora esse valor possa ser facilmente alterado ou conter uma string relativamente sem significado (por exemplo, Ubuntu-3487340239), em alguns casos, ele pode fornecer informações sobre a função do sistema de destino na rede corporativa (por exemplo, SQL-PROD-01 para um servidor SQL de produção).
 
-```uname -a```
+```bash
+uname -a
+```
 
 Irá imprimir informações do sistema, fornecendo detalhes adicionais sobre o kernel utilizado. Isso será útil na busca por possíveis vulnerabilidades no kernel que possam levar à escalada de privilégios.
 
