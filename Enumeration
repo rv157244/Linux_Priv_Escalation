@@ -1,0 +1,139 @@
+A escalada de privilégios é uma jornada. Não existem soluções mágicas, e muito depende da configuração específica do sistema alvo. A versão do kernel, os aplicativos instalados, as linguagens de programação suportadas e as senhas de outros usuários são alguns dos principais elementos que influenciarão seu caminho até o shell root.
+
+Enumeração:
+Os testes de penetração, ao contrário das máquinas CTF, não terminam quando você obtém acesso a um sistema específico ou a um nível de privilégio de usuário. Como você verá, a enumeração é tão importante na fase pós-comprometimento quanto na fase anterior.
+
+```hostname´´´
+
+comando retornará o nome do host da máquina de destino. Embora esse valor possa ser facilmente alterado ou conter uma string relativamente sem significado (por exemplo, Ubuntu-3487340239), em alguns casos, ele pode fornecer informações sobre a função do sistema de destino na rede corporativa (por exemplo, SQL-PROD-01 para um servidor SQL de produção).
+
+```uname -a```
+
+Irá imprimir informações do sistema, fornecendo detalhes adicionais sobre o kernel utilizado. Isso será útil na busca por possíveis vulnerabilidades no kernel que possam levar à escalada de privilégios.
+
+```cat /proc/versão```
+
+O sistema de arquivos proc (procfs) fornece informações sobre os processos do sistema alvo. Você encontrará o proc em diversas distribuições Linux, tornando-o uma ferramenta essencial para se ter em seu arsenal.
+
+Ao analisar o sistema, /proc/versionvocê poderá obter informações sobre a versão do kernel e dados adicionais, como se um compilador (por exemplo, GCC) está instalado.
+
+
+```cat /etc/issue```
+
+Os sistemas também podem ser identificados analisando o /etc/issuearquivo. Este arquivo geralmente contém algumas informações sobre o sistema operacional, mas pode ser facilmente personalizado ou alterado. Aliás, qualquer arquivo que contenha informações do sistema pode ser personalizado ou alterado. Para uma compreensão mais clara do sistema, é sempre bom analisar todos esses arquivos.
+
+```ps```
+O ps comando é uma maneira eficaz de visualizar os processos em execução em um sistema Linux . Digitá-lo ps no terminal exibirá os processos do shell atual.
+
+O resultado do ps (Status do Processo) mostrará o seguinte:
+
+PID: O ID do processo (único para cada processo)
+TTY: Tipo de terminal usado pelo usuário
+Tempo: Quantidade de tempo de CPU utilizada pelo processo (este NÃO é o tempo total de execução do processo).
+CMD: O comando ou executável em execução (NÃO exibirá nenhum parâmetro da linha de comando)
+O comando “ps” oferece algumas opções úteis.
+
+ps -A: Exibir todos os processos em execução
+ps axjf: Visualizar árvore de processos (veja a formação da árvore até ps axjfa execução abaixo)
+
+
+ps auxA aux opção exibirá os processos de todos os usuários (a), mostrará o usuário que iniciou o processo (u) e exibirá os processos que não estão associados a um terminal (x). Analisando a saída do comando `ps aux`, podemos ter uma melhor compreensão do sistema e de possíveis vulnerabilidades.
+
+```env```
+O env comando exibirá as variáveis ​​de ambiente.
+A variável PATH pode conter um compilador ou uma linguagem de script (por exemplo, Python) que pode ser usada para executar código no sistema de destino ou explorada para escalonamento de privilégios.
+
+```sudo -l```
+O sistema de destino pode ser configurado para permitir que os usuários executem alguns (ou todos) os comandos com privilégios de root. O sudo -l comando pode ser usado para listar todos os comandos que seu usuário pode executar usando sudo.
+
+
+
+```ls```
+
+Um dos comandos comuns usados ​​no Linux é provavelmente ls.
+Ao procurar por possíveis vetores de escalonamento de privilégios, lembre-se de sempre usar o ls comando com o -la parâmetro.
+
+```id```
+
+O id comando fornecerá uma visão geral do nível de privilégios do usuário e das suas associações a grupos.
+Vale lembrar que o id comando também pode ser usado para obter as mesmas informações para outro usuário. Por exemplo: ```id hexsilent´´´
+
+```cat /etc/passwd```
+
+A leitura do /etc/passwdarquivo pode ser uma maneira fácil de descobrir usuários no sistema.
+
+```history```
+
+Analisar comandos anteriores com o comando ```history``` pode nos dar uma ideia sobre o sistema alvo e, embora raramente, pode conter informações armazenadas, como senhas ou nomes de usuário.
+
+
+
+```ifconfig```(descontinuado)
+O sistema alvo pode ser um ponto de conexão para outra rede. O ifconfig comando nos fornecerá informações sobre as interfaces de rede do sistema. O exemplo abaixo mostra que o sistema alvo possui três interfaces (eth0, tun0 e tun1). Nossa máquina atacante consegue acessar a interface eth0, mas não consegue acessar diretamente as outras duas redes.
+ps: uma alternativa melhor e ```ip addr```
+
+```netstat```
+
+Após uma verificação inicial das interfaces e rotas de rede existentes, vale a pena analisar as comunicações em andamento. O comando ```netstat``` pode ser usado com diversas opções para coletar informações sobre as conexões existentes.
+
+    ```netstat -a```: Mostra todas as portas de escuta e conexões estabelecidas.
+    ```netstat -at``` ou ```netstat -au```também pode ser usado para listar os protocolos TCP ou UDP , respectivamente.
+    ```netstat -l```: lista as portas em modo de "escuta". Essas portas estão abertas e prontas para aceitar conexões de entrada. Isso pode ser usado com a opção "t" para listar apenas as portas que estão escutando usando o protocolo TCP.
+    ```netstat -s```: lista as estatísticas de uso da rede por protocolo.
+    ```netstat -tp```: listar conexões com o nome do serviço e informações de PID. Isso também pode ser usado com a -l opção de listar as portas de escuta.
+    ```netstat -i```: Mostra as estatísticas da interface.
+    
+O netstat uso que você provavelmente verá com mais frequência em posts de blog, artigos e cursos é netstat -ano aquele que pode ser dividido da seguinte forma:
+
+    ```-a```Exibir todos os soquetes
+    ```-n```Não resolva nomes
+    ```-o```: Temporizadores de exibição
+            (ps: ```netstat -ano```)
+            
+```find```
+A busca por informações importantes e possíveis vetores de escalonamento de privilégios no sistema alvo pode ser proveitosa. O comando "find" integrado é útil e vale a pena tê-lo à disposição.
+
+Abaixo estão alguns exemplos úteis para o comando “find”.
+
+Localizar arquivos:
+
+    ```find . -name flag1.txt```: encontre o arquivo chamado “flag1.txt” no diretório atual
+    ```find /home -name flag1.txt```:Localize os arquivos com o nome “flag1.txt” no diretório /home.
+    ```find / -type d -name config```: encontre o diretório chamado config em “/”
+    ```find / -type f -perm 0777```: encontrar arquivos com permissões 777 (arquivos legíveis, graváveis ​​e executáveis ​​por todos os usuários)
+    ```find / -perm a=x```: encontrar arquivos executáveis
+    ```find /home -user frank```: encontrar todos os arquivos do usuário “frank” em “/home”
+    ```find / -mtime 10```: encontrar arquivos que foram modificados nos últimos 10 dias
+    ```find / -atime 10```: encontrar arquivos que foram acessados ​​nos últimos 10 dias
+    ```find / -cmin -60```: encontrar arquivos alterados na última hora (60 minutos)
+    ```find / -amin -60```: encontrar arquivos acessados ​​na última hora (60 minutos)
+    ```find / -size 50M```: encontrar arquivos com tamanho de 50 MB
+
+É importante observar que o comando "find" tende a gerar erros, o que às vezes dificulta a leitura da saída. Por isso, é recomendável usar o comando "find" com "-type f 2>/dev/null" para redirecionar os erros para "/dev/null" e obter uma saída mais limpa.
+
+Pastas e arquivos que podem ser gravados ou executados a partir de:
+
+```find / -writable -type d 2>/dev/null```: Encontre pastas com permissão de escrita para todos
+```find / -perm -222 -type d 2>/dev/null```: Encontre pastas com permissão de escrita para todos
+```find / -perm -o w -type d 2>/dev/null```: Encontre pastas com permissão de escrita para todos
+```find / -perm -o x -type d 2>/dev/null```: Encontrar pastas executáveis ​​para todos os usuários
+
+Encontre ferramentas de desenvolvimento e linguagens suportadas:
+
+    ```find / -name perl*```
+    ```find / -name python*```
+    ```find / -name gcc*```
+
+Encontre permissões de arquivo específicas:
+
+Abaixo, segue um breve exemplo usado para encontrar arquivos que possuem o bit SUID ativado. O bit SUID permite que o arquivo seja executado com o nível de privilégio da conta proprietária, em vez da conta que o executa. Isso possibilita um interessante caminho de escalonamento de privilégios, que veremos com mais detalhes na tarefa 6. O exemplo abaixo é fornecido para complementar o tópico sobre o comando "find".
+
+```find / -perm -u=s -type f 2>/dev/null```:Encontre arquivos com o bit SUID, que nos permite executar o arquivo com um nível de privilégio superior ao do usuário atual.
+
+Diversas ferramentas podem ajudar a economizar tempo durante o processo de enumeração. Essas ferramentas devem ser usadas apenas para economizar tempo, cientes de que podem deixar passar alguns vetores de escalonamento de privilégios. Abaixo, segue uma lista de ferramentas populares de enumeração para Linux com links para seus respectivos repositórios no GitHub.
+
+    LinPeas: https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS
+    LinEnum: https://github.com/rebootuser/LinEnum
+    LES (Linux Exploit Suggester): https://github.com/mzet-/linux-exploit-suggester
+    Linux Smart Enumeration: https://github.com/diego-treitos/linux-smart-enumeration
+    Linux Priv Checker: https://github.com/linted/linuxprivchecker
