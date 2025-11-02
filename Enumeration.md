@@ -165,8 +165,13 @@ Abaixo, segue um breve exemplo usado para encontrar arquivos que possuem o bit S
 
 Diversas ferramentas podem ajudar a economizar tempo durante o processo de enumeração. Essas ferramentas devem ser usadas apenas para economizar tempo, cientes de que podem deixar passar alguns vetores de escalonamento de privilégios. Abaixo, segue uma lista de ferramentas populares de enumeração para Linux com links para seus respectivos repositórios no GitHub.
 
-[LinPeas] (https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS)
-[LinEnum] (https://github.com/rebootuser/LinEnum)
-[LES (Linux Exploit Suggester)] (https://github.com/mzet-/linux-exploit-suggester)
-[Linux Smart Enumeration] (https://github.com/diego-treitos/linux-smart-enumeration)
-[Linux Priv Checker] (https://github.com/linted/linuxprivchecker)
+
+[LinPeas](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS)
+
+[LinEnum](https://github.com/rebootuser/LinEnum)
+
+[LES (Linux Exploit Suggester)](https://github.com/mzet-/linux-exploit-suggester)
+
+[Linux Smart Enumeration](https://github.com/diego-treitos/linux-smart-enumeration)
+
+[Linux Priv Checker](https://github.com/linted/linuxprivchecker)
