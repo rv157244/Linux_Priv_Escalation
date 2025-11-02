@@ -15,18 +15,24 @@ uname -a
 
 Irá imprimir informações do sistema, fornecendo detalhes adicionais sobre o kernel utilizado. Isso será útil na busca por possíveis vulnerabilidades no kernel que possam levar à escalada de privilégios.
 
-```cat /proc/versão```
+```bash
+cat /proc/versão
+```
 
 O sistema de arquivos proc (procfs) fornece informações sobre os processos do sistema alvo. Você encontrará o proc em diversas distribuições Linux, tornando-o uma ferramenta essencial para se ter em seu arsenal.
 
 Ao analisar o sistema, /proc/versionvocê poderá obter informações sobre a versão do kernel e dados adicionais, como se um compilador (por exemplo, GCC) está instalado.
 
 
-```cat /etc/issue```
+```bash
+cat /etc/issue
+```
 
 Os sistemas também podem ser identificados analisando o /etc/issuearquivo. Este arquivo geralmente contém algumas informações sobre o sistema operacional, mas pode ser facilmente personalizado ou alterado. Aliás, qualquer arquivo que contenha informações do sistema pode ser personalizado ou alterado. Para uma compreensão mais clara do sistema, é sempre bom analisar todos esses arquivos.
 
-```ps```
+```bash
+ps
+```
 O ps comando é uma maneira eficaz de visualizar os processos em execução em um sistema Linux . Digitá-lo ps no terminal exibirá os processos do shell atual.
 
 O resultado do ps (Status do Processo) mostrará o seguinte:
@@ -37,46 +43,67 @@ Tempo: Quantidade de tempo de CPU utilizada pelo processo (este NÃO é o tempo 
 CMD: O comando ou executável em execução (NÃO exibirá nenhum parâmetro da linha de comando)
 O comando “ps” oferece algumas opções úteis.
 
-ps -A: Exibir todos os processos em execução
-ps axjf: Visualizar árvore de processos (veja a formação da árvore até ps axjfa execução abaixo)
+```bash
+ps -A
+````
+Exibir todos os processos em execução
+```bashps axjf
+````
+Visualizar árvore de processos (veja a formação da árvore até ps axjfa execução abaixo)
 
 
 ps auxA aux opção exibirá os processos de todos os usuários (a), mostrará o usuário que iniciou o processo (u) e exibirá os processos que não estão associados a um terminal (x). Analisando a saída do comando `ps aux`, podemos ter uma melhor compreensão do sistema e de possíveis vulnerabilidades.
 
-```env```
+```bash
+env
+```
 O env comando exibirá as variáveis ​​de ambiente.
 A variável PATH pode conter um compilador ou uma linguagem de script (por exemplo, Python) que pode ser usada para executar código no sistema de destino ou explorada para escalonamento de privilégios.
 
-```sudo -l```
+```bash
+sudo -l
+```
 O sistema de destino pode ser configurado para permitir que os usuários executem alguns (ou todos) os comandos com privilégios de root. O sudo -l comando pode ser usado para listar todos os comandos que seu usuário pode executar usando sudo.
 
 
 
-```ls```
+```bash
+ls
+```
 
 Um dos comandos comuns usados ​​no Linux é provavelmente ls.
 Ao procurar por possíveis vetores de escalonamento de privilégios, lembre-se de sempre usar o ls comando com o -la parâmetro.
 
-```id```
+```bash
+id
+```
 
 O id comando fornecerá uma visão geral do nível de privilégios do usuário e das suas associações a grupos.
 Vale lembrar que o id comando também pode ser usado para obter as mesmas informações para outro usuário. Por exemplo: ```id hexsilent´´´
 
-```cat /etc/passwd```
+```bash
+cat /etc/passwd
+```
 
 A leitura do /etc/passwdarquivo pode ser uma maneira fácil de descobrir usuários no sistema.
 
-```history```
+```bash
+history
+```
 
 Analisar comandos anteriores com o comando ```history``` pode nos dar uma ideia sobre o sistema alvo e, embora raramente, pode conter informações armazenadas, como senhas ou nomes de usuário.
 
 
 
-```ifconfig```(descontinuado)
+```bash
+ifconfig
+```
 O sistema alvo pode ser um ponto de conexão para outra rede. O ifconfig comando nos fornecerá informações sobre as interfaces de rede do sistema. O exemplo abaixo mostra que o sistema alvo possui três interfaces (eth0, tun0 e tun1). Nossa máquina atacante consegue acessar a interface eth0, mas não consegue acessar diretamente as outras duas redes.
-ps: uma alternativa melhor e ```ip addr```
+"ps:ifconfig foi descontinuado, uma alternativa melhor é o```ip addr```
 
-```netstat```
+```bash
+netstat
+```
 
 Após uma verificação inicial das interfaces e rotas de rede existentes, vale a pena analisar as comunicações em andamento. O comando ```netstat``` pode ser usado com diversas opções para coletar informações sobre as conexões existentes.
 
@@ -94,7 +121,9 @@ O netstat uso que você provavelmente verá com mais frequência em posts de blo
     ```-o```: Temporizadores de exibição
             (ps: ```netstat -ano```)
             
-```find```
+```bash
+find
+```
 A busca por informações importantes e possíveis vetores de escalonamento de privilégios no sistema alvo pode ser proveitosa. O comando "find" integrado é útil e vale a pena tê-lo à disposição.
 
 Abaixo estão alguns exemplos úteis para o comando “find”.
@@ -132,12 +161,12 @@ Encontre permissões de arquivo específicas:
 
 Abaixo, segue um breve exemplo usado para encontrar arquivos que possuem o bit SUID ativado. O bit SUID permite que o arquivo seja executado com o nível de privilégio da conta proprietária, em vez da conta que o executa. Isso possibilita um interessante caminho de escalonamento de privilégios, que veremos com mais detalhes na tarefa 6. O exemplo abaixo é fornecido para complementar o tópico sobre o comando "find".
 
-```find / -perm -u=s -type f 2>/dev/null```:Encontre arquivos com o bit SUID, que nos permite executar o arquivo com um nível de privilégio superior ao do usuário atual.
+```find / -perm -u=s -type f 2>/dev/null```: Encontre arquivos com o bit SUID, que nos permite executar o arquivo com um nível de privilégio superior ao do usuário atual.
 
 Diversas ferramentas podem ajudar a economizar tempo durante o processo de enumeração. Essas ferramentas devem ser usadas apenas para economizar tempo, cientes de que podem deixar passar alguns vetores de escalonamento de privilégios. Abaixo, segue uma lista de ferramentas populares de enumeração para Linux com links para seus respectivos repositórios no GitHub.
 
-    LinPeas: https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS
-    LinEnum: https://github.com/rebootuser/LinEnum
-    LES (Linux Exploit Suggester): https://github.com/mzet-/linux-exploit-suggester
-    Linux Smart Enumeration: https://github.com/diego-treitos/linux-smart-enumeration
-    Linux Priv Checker: https://github.com/linted/linuxprivchecker
+    [LinPeas] (https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS)
+    [LinEnum] (https://github.com/rebootuser/LinEnum)
+    [LES (Linux Exploit Suggester)] (https://github.com/mzet-/linux-exploit-suggester)
+    [Linux Smart Enumeration] (https://github.com/diego-treitos/linux-smart-enumeration)
+    [Linux Priv Checker] (https://github.com/linted/linuxprivchecker)
